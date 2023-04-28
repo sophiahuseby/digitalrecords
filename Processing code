@@ -1,0 +1,193 @@
+import processing.serial.*;    // Importing the Serial library
+import java.util.Map;          // Importing library to use HashMap
+import processing.sound.*;
+SoundFile file_1;
+SoundFile file_2;
+SoundFile file_3;
+SoundFile file_4;
+SoundFile file_5;
+SoundFile file_6;
+SoundFile file_7;
+SoundFile file_8;
+Serial port;    // Creating an object to handle serial communication
+
+// String variable to store the received serial string
+String serialString;
+// Dictionary for all the values received over serial
+HashMap<String, Integer> serialData = new HashMap<String, Integer>();
+  
+ //time tracker
+int counter = 0;
+
+//flags
+int flag1 = 0;
+int flag2 = 0;
+int flag3 = 0;
+int flag4 = 0;
+int flag5 = 0;
+int flag6 = 0;
+int flag7 = 0;
+int flag8 = 0;
+
+  
+
+void setup() {    // Executes once
+  size(640, 480);
+  // Specifying the USB port to which the Arduino is connected
+  String portName = "COM4";  
+  
+  //sound files
+  file_1 = new SoundFile(this,"CanonCello.wav");
+  file_2 = new SoundFile(this,"CanonViola.wav");
+  file_3 = new SoundFile(this,"CanonViolin2.wav");
+  file_4 = new SoundFile(this,"CanonViolin1.wav");
+  file_5 = new SoundFile(this,"PirateCello.wav");
+  file_6 = new SoundFile(this,"PirateViola.wav");
+  file_7 = new SoundFile(this,"PirateViolin2.wav");
+  file_8 = new SoundFile(this,"PirateViolin1.wav");
+
+  port = new Serial(this, portName, 9600);
+  port.bufferUntil('\n');
+}
+
+void draw() {     
+  // Parse the data received over Serial in the form key1:value1;key2:value2;key3:value3...
+  parseSerialData();
+  
+  // Checks if serialData is available and updated before using it 
+    //command to change disc status
+    int disc1 = serialData.get("disc1");
+    int disc2 = serialData.get("disc2");
+    int disc3 = serialData.get("disc3");
+    int disc4 = serialData.get("disc4");
+    int disc5 = serialData.get("disc1");
+    int disc6 = serialData.get("disc2");
+    int disc7 = serialData.get("disc3");
+    int disc8 = serialData.get("disc4");
+    int pot = serialData.get("pot");
+    
+    if(pot<=665){
+    //play files
+      if(disc1 == 1){//positive command 
+        file_1.play(1,0,1,0,counter);
+        println("hmmm");
+      }
+      else{//negative command
+        file_1.stop();
+      }
+    
+      if(disc2 == 1){//positive command 
+        file_2.play(1,0,1,0,counter);
+      }
+      else{//negative command
+        file_2.stop();
+      }
+    
+      if(disc3 == 1){//positive command 
+        file_3.play(1,0,1,0,counter);
+      }
+      else{//negative command
+        file_3.stop();
+      }
+    
+      if(disc4 == 1){//positive command 
+        file_4.play(1,0,1,0,counter);
+
+      }
+      else{//negative command
+        file_4.stop();
+      }
+    }else{
+          //play files
+      if(disc5 == 1){//positive command 
+        file_5.play(1,0,1,0,counter);
+        //how long it lasts
+        /*
+        disc1_lasttime = 16000-cuetime;
+        disc1_lasttime_start = millis();
+        */
+      }
+      else{//negative command
+        file_5.stop();
+      }
+
+    
+      if(disc6 == 1){//positive command 
+        file_6.play(1,0,1,0,counter);
+      }
+      else{//negative command
+        file_6.stop();
+      }
+
+    
+      if(disc7 == 1){//positive command 
+        file_7.play(1,0,1,0,counter);
+      }
+      else{//negative command
+        file_7.stop();
+      }
+    
+      if(disc8 == 1){//positive command 
+        file_8.play(1,0,1,0,counter);
+      }
+      else{//negative command
+        file_8.stop();
+        }
+    }
+      
+    counter++;
+    if (counter == 16){counter = 0;}
+    delay(1000);
+    disc1=0;
+    disc2=0;
+    disc3=0;
+    disc4=0;
+    disc5=0;
+    disc6=0;
+    disc7=0;
+    disc8=0;
+    }
+
+
+
+
+
+
+// serialEvent function 
+  // Triggered whenever data is received over serial
+  void serialEvent(Serial p) {
+  serialString = p.readString();
+}
+
+// parseSerialData function
+  // Read the serialString variable of the form 
+  // "Key1:Value1;Key2:Value2;Key3:Value3 ..."
+  // And update the serialData HashMap
+void parseSerialData() {
+  // Delimiters used to split the string
+  final String MAP_ITEMS_DELIMITER = ";";  // ; to split key-value pairs
+  final String KEY_VALUE_DELIMITER = ":";  // : to split key and value
+  
+  if (serialString == null || serialString.length() == 0) {
+    // Do nothing if empty string
+    return;
+  }
+  
+  String[] keyValuePairStrings = serialString.split(MAP_ITEMS_DELIMITER);
+  
+  for (String kvString : keyValuePairStrings) {
+    String[] keyValuePair = kvString.split(KEY_VALUE_DELIMITER);
+    if (keyValuePair == null || keyValuePair.length < 2) {
+      // skip if we have bad input
+      continue;
+    }
+    
+    // trim our values now 
+    String keyItem = trim(keyValuePair[0]);
+    String value = trim(keyValuePair[1]);
+    int itemValue = int(value);
+    
+    // Put the value into our hashmap
+    serialData.put(keyItem, itemValue);
+  } 
+}
