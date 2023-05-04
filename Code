@@ -1,0 +1,196 @@
+#include <Adafruit_NeoPixel.h>
+#include <Servo.h> // Include the Servo library
+
+#define PIN 9   // input pin Neopixel is attached to
+#define PIN2 10   // input pin Neopixel is attached to
+
+#define NUMPIXELS 19 // number of neopixels in strip
+#define NUMPIXELS2 3 // number of neopixels in strip
+
+Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRBW + NEO_KHZ800);
+
+Adafruit_NeoPixel pixels2 = Adafruit_NeoPixel(NUMPIXELS2, PIN2, NEO_GRBW + NEO_KHZ800);
+
+
+int delayval = 55; // timing delay in milliseconds
+
+int redColor = 50;
+int greenColor = 50;
+int blueColor = 50;
+
+const int potPin = A0; // analog pin where the potentiometer is connected
+
+const int lidRes = A1; // Photoresistor at Arduino analog pin A0
+
+const int mainRes = A2; // Photoresistor at Arduino analog pin A1
+Servo mainServo; // Create a Servo object
+
+const int sopRes = A4; // Photoresistor at Arduino analog pin A2
+Servo sopServo; // Create a Servo object
+
+const int altoRes = A5; // Photoresistor at Arduino analog pin A3 ****** soprano a4
+Servo altoServo; // Create a Servo object
+
+const int tenRes = A6; // Photoresistor at Arduino analog pin A4
+Servo tenServo; // Create a Servo object
+
+const int bassRes = A8; // Photoresistor at Arduino analog pin A5
+Servo bassServo; // Create a Servo object
+
+
+void setup() {
+  pinMode(lidRes, INPUT);// Set resistor - A0 pin as an input
+  pinMode(mainRes, INPUT);// Set resistor - A1 pin as an input
+  pinMode(sopRes, INPUT);// Set resistor - A2 pin as an input
+  pinMode(altoRes, INPUT);// Set resistor - A3 pin as an input
+  pinMode(tenRes, INPUT);// Set resistor - A4 pin as an input
+  pinMode(bassRes, INPUT);// Set resistor - A5 pin as an input
+
+  // mainServo.attach(2); // Attach the servo to pin 2
+  // sopServo.attach(3); // Attach the servo to pin 3
+  // altoServo.attach(4); // Attach the servo to pin 4
+  // tenServo.attach(5); // Attach the servo to pin 5
+  // bassServo.attach(6); // Attach the servo to pin 6
+
+  pixels.begin();
+  pixels.setBrightness(50); // Turn the brightness way down!!!
+
+  pixels2.begin();
+  pixels2.setBrightness(50); // Turn the brightness way down!!!
+  Serial.begin(9600);
+
+}
+
+void loop() {
+    int lidLight = analogRead(lidRes);
+    int mainLight = analogRead(mainRes);
+    int sopLight = analogRead(sopRes);
+    int altoLight = analogRead(altoRes);
+    int tenLight = analogRead(tenRes);
+    int bassLight = analogRead(bassRes);
+
+    int potValue = analogRead(potPin); // read the analog value from the potentiometer
+    // delay(100); // wait for 100 milliseconds before taking another reading
+
+
+    // Serial.print(lidLight);
+    // Serial.print(";"); //Prints the "X = "
+    // Serial.print(mainLight);
+    // Serial.print(";"); //Prints the "X = "
+    // Serial.print(sopLight);
+    // Serial.print(";"); //Prints the "X = "
+    // Serial.print(altoLight);
+    // Serial.print(";"); //Prints the "X = "
+    // Serial.print(tenLight);
+    // Serial.print(";"); //Prints the "X = "
+    // Serial.print(bassLight);
+    // Serial.println(";"); //Prints the "X = "
+    // delay(200);
+
+
+  while(lidLight > 700){
+    for (int i=0; i < NUMPIXELS; i++) {
+      pixels.setBrightness(50);                      	// Turn the brightness way down!!!
+
+      // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
+      pixels.setPixelColor(i, pixels.Color(redColor, greenColor, blueColor));
+
+      // This sends the updated pixel color to the hardware.
+      pixels.show();
+
+      // Delay for a period of time (in milliseconds).
+      delay(delayval);
+    }
+
+    if(bassLight < 500){
+      // delay(1000);
+      bassServo.write(0);
+      delay(4000);
+      Serial.print("disc1:1;");
+
+    }
+    else{
+      pixels2.setBrightness(0);
+      // bassServo.write(90);
+      bassServo.writeMicroseconds(1500);
+      Serial.print("disc1:0;");
+    }
+
+    if(tenLight < 500){
+      // delay(1000);
+      tenServo.write(0);
+      delay(4000);
+      Serial.print("disc2:1;");
+
+    }
+    else{
+      tenServo.write(90);
+      Serial.print("disc2:0;");
+    }
+
+    if(altoLight < 500){
+      // delay(1000);
+      altoServo.write(0);
+      delay(4000);
+      Serial.print("disc3:1;");
+
+    }
+    else{
+      altoServo.write(90);
+      Serial.print("disc3:0;");
+    }
+
+    if(sopLight < 400){
+      // delay(1000);
+      sopServo.write(0);
+      delay(4000);
+      Serial.print("disc4:1;");
+
+    }
+    else{
+      sopServo.write(90);
+      Serial.print("disc4:0;");
+    }
+
+    if(mainLight < 500){
+      Serial.print("disc5:1;");
+      pixels2.setBrightness(50);                      	// Turn the brightness way down!!!
+      for (int i=0; i < NUMPIXELS2; i++) {
+        // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
+        pixels2.setPixelColor(i, pixels2.Color(redColor, greenColor, blueColor));
+
+        // This sends the updated pixel color to the hardware.
+        pixels2.show();
+
+        // Delay for a period of time (in milliseconds).
+        // delay(delayval);
+      }
+      mainServo.write(0);
+      delay(4000);
+
+    }
+    else{
+      mainServo.write(90);
+      Serial.print("disc5:0;");
+    }
+
+    Serial.print("pot:"); // print the value to the serial monitor
+    Serial.print(potValue); // print the value to the serial monitor
+    Serial.println(";"); // print the value to the serial monitor
+
+  }
+    // Serial.println(mainLight);
+    pixels.setBrightness(0); // Turn the brightness way down!!!
+
+    for (int i=0; i < NUMPIXELS; i++) {
+      // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
+      pixels.setPixelColor(i, pixels.Color(0, 0, 0));
+
+      // This sends the updated pixel color to the hardware.
+      pixels.show();
+
+      // Delay for a period of time (in milliseconds).
+    }  
+
+
+}
