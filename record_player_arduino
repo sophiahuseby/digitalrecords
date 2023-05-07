@@ -70,25 +70,9 @@ void loop() {
     int bassLight = analogRead(bassRes);
 
     int potValue = analogRead(potPin); // read the analog value from the potentiometer
-    // delay(100); // wait for 100 milliseconds before taking another reading
 
-
-    // Serial.println(lidLight);
-    // Serial.print(";"); //Prints the "X = "
-    // Serial.println(mainLight);
-    // Serial.print(";"); //Prints the "X = "
-    // Serial.println(sopLight);
-    // Serial.print(";"); //Prints the "X = "
-    // Serial.println(altoLight);
-    // Serial.print(";"); //Prints the "X = "
-    // Serial.println(tenLight);
-    // Serial.print(";"); //Prints the "X = "
-    // Serial.println(bassLight);
-    // Serial.println(";"); //Prints the "X = "
-    // delay(200);
 
 if(lidLight < 700) {
-    // Serial.println(mainLight);
     pixels.setBrightness(0); // Turn the brightness way down!!!
 
     for (int i=0; i < NUMPIXELS; i++) {
@@ -97,11 +81,9 @@ if(lidLight < 700) {
 
       // This sends the updated pixel color to the hardware.
       pixels.show();
-
-      // Delay for a period of time (in milliseconds).
     }  
 }
-// if(lidLight > 700){
+
 else{
     for (int i=0; i < NUMPIXELS; i++) {
       pixels.setBrightness(50);                      	// Turn the brightness way down!!!
@@ -117,25 +99,17 @@ else{
     }
 
     if(bassLight < 650){
-      // delay(1000);
       bassServo.writeMicroseconds(1500 + 85);
-      // delay(4000);
       Serial.print("disc1:1;");
-
     }
     else{
-      pixels2.setBrightness(0);
-      // bassServo.write(90);
       bassServo.writeMicroseconds(1500-20);
       Serial.print("disc1:0;");
     }
 
     if(tenLight < 750){
-      // delay(1000);
       tenServo.writeMicroseconds(1500 + 85);
-      // delay(4000);
       Serial.print("disc2:1;");
-
     }
     else{
       tenServo.writeMicroseconds(1500 -25);
@@ -143,11 +117,8 @@ else{
     }
 
     if(altoLight < 500){
-      // delay(1000);
       altoServo.writeMicroseconds(1500 + 35);
-      // delay(4000);
       Serial.print("disc3:1;");
-
     }
     else{
       altoServo.writeMicroseconds(1500 -50);
@@ -155,11 +126,8 @@ else{
     }
 
     if(sopLight < 250){
-      // delay(1000);
       sopServo.writeMicroseconds(1500 + 45);
-      // delay(4000);
       Serial.print("disc4:1;");
-
     }
     else{
       sopServo.writeMicroseconds(1500 - 75);
@@ -168,7 +136,7 @@ else{
 
     if(mainLight < 500){
       Serial.print("disc5:1;");
-      pixels2.setBrightness(50);                      	// Turn the brightness way down!!!
+      pixels2.setBrightness(50); // Turn the brightness down
       for (int i=0; i < NUMPIXELS2; i++) {
         // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
         pixels2.setPixelColor(i, pixels2.Color(redColor, greenColor, blueColor));
@@ -177,28 +145,23 @@ else{
         pixels2.show();
 
         // Delay for a period of time (in milliseconds).
-        // delay(delayval);
+        delay(delayval);
       }
       mainServo.writeMicroseconds(1500 + 75);
-      // delay(4000);
-
     }
     else{
       mainServo.writeMicroseconds(1500 - 15);
-      // mainServo.write(90);
 
       Serial.print("disc5:0;");
-          pixels2.setBrightness(0); // Turn the brightness way down!!!
+      pixels2.setBrightness(0); // Turn the brightness way down!!!
 
-    for (int i=0; i < NUMPIXELS2; i++) {
-      // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
-      pixels2.setPixelColor(i, pixels2.Color(0, 0, 0));
+      for (int i=0; i < NUMPIXELS2; i++) {
+        // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
+        pixels2.setPixelColor(i, pixels2.Color(0, 0, 0));
 
-      // This sends the updated pixel color to the hardware.
-      pixels2.show();
-
-      // Delay for a period of time (in milliseconds).
-    }  
+        // This sends the updated pixel color to the hardware.
+        pixels2.show();
+      }  
     }
 
     Serial.print("pot:"); // print the value to the serial monitor
