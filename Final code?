@@ -47,10 +47,10 @@ void setup() {
   pinMode(bassRes, INPUT);// Set resistor - A5 pin as an input
 
   mainServo.attach(2); // Attach the servo to pin 2
-  // sopServo.attach(3); // Attach the servo to pin 3
-  // altoServo.attach(4); // Attach the servo to pin 4
-  // tenServo.attach(5); // Attach the servo to pin 5
-  // bassServo.attach(6); // Attach the servo to pin 6
+  sopServo.attach(3); // Attach the servo to pin 3
+  altoServo.attach(4); // Attach the servo to pin 4
+  tenServo.attach(5); // Attach the servo to pin 5
+  bassServo.attach(6); // Attach the servo to pin 6
 
   pixels.begin();
   pixels.setBrightness(50); // Turn the brightness way down!!!
@@ -116,9 +116,9 @@ else{
       delay(delayval);
     }
 
-    if(bassLight < 600){
+    if(bassLight < 650){
       // delay(1000);
-      // bassServo.writeMicroseconds(1500 + 85);
+      bassServo.writeMicroseconds(1500 + 85);
       // delay(4000);
       Serial.print("disc1:1;");
 
@@ -126,47 +126,47 @@ else{
     else{
       pixels2.setBrightness(0);
       // bassServo.write(90);
-      // bassServo.writeMicroseconds(1500);
+      bassServo.writeMicroseconds(1500-20);
       Serial.print("disc1:0;");
     }
 
-    if(tenLight < 650){
+    if(tenLight < 750){
       // delay(1000);
-      // tenServo.writeMicroseconds(1500 + 85);
+      tenServo.writeMicroseconds(1500 + 85);
       // delay(4000);
       Serial.print("disc2:1;");
 
     }
     else{
-      // tenServo.writeMicroseconds(1500 - 100);
+      tenServo.writeMicroseconds(1500 -25);
       Serial.print("disc2:0;");
     }
 
     if(altoLight < 500){
       // delay(1000);
-      // altoServo.writeMicroseconds(1500 + 45);
+      altoServo.writeMicroseconds(1500 + 35);
       // delay(4000);
       Serial.print("disc3:1;");
 
     }
     else{
-      // altoServo.writeMicroseconds(1500);
+      altoServo.writeMicroseconds(1500 -50);
       Serial.print("disc3:0;");
     }
 
     if(sopLight < 250){
       // delay(1000);
-      // sopServo.writeMicroseconds(1500 + 70);
+      sopServo.writeMicroseconds(1500 + 45);
       // delay(4000);
       Serial.print("disc4:1;");
 
     }
     else{
-      // sopServo.writeMicroseconds(1500);
+      sopServo.writeMicroseconds(1500 - 75);
       Serial.print("disc4:0;");
     }
 
-    if(mainLight < 400){
+    if(mainLight < 500){
       Serial.print("disc5:1;");
       pixels2.setBrightness(50);                      	// Turn the brightness way down!!!
       for (int i=0; i < NUMPIXELS2; i++) {
@@ -184,18 +184,26 @@ else{
 
     }
     else{
-      mainServo.writeMicroseconds(1500 - 45);
+      mainServo.writeMicroseconds(1500 - 15);
       // mainServo.write(90);
 
       Serial.print("disc5:0;");
+          pixels2.setBrightness(0); // Turn the brightness way down!!!
+
+    for (int i=0; i < NUMPIXELS2; i++) {
+      // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
+      pixels2.setPixelColor(i, pixels2.Color(0, 0, 0));
+
+      // This sends the updated pixel color to the hardware.
+      pixels2.show();
+
+      // Delay for a period of time (in milliseconds).
+    }  
     }
 
     Serial.print("pot:"); // print the value to the serial monitor
     Serial.print(potValue); // print the value to the serial monitor
     Serial.println(";"); // print the value to the serial monitor
 }
-
-
-
 
 }
